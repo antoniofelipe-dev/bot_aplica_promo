@@ -30,4 +30,6 @@ def login():
                 else:
                         os.system('cls' if os.name == 'nt' else 'clear')
                         print("\n   Usuário ou senha CONSINCO incorretos!")
+
+
         

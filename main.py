@@ -1,22 +1,22 @@
+import pandas as pd
+from functions import *
 
-# 1. Abrir o app.
+# 1. Abrir o app, selecionar segmento + opções padrões
 
-# 2. Selecionar empresa e segmento + opções padrões.
+company = company_selected()
+
+app(company)
+
+# 2. Selecionar segmento + opções padrões.
 
 # 3. Inserir dados da promoção.
+
+info_promotion()
 
 # 4. Adicionar produtos e inserir preços promocionais aos mesmos.
 
 
-empresas_segm = [
-    {'loja':'003 RDAMASIO', 'segmentos':['atacado_pi']},
-    {'loja':'005 TDPI CNT', 'segmentos':['atacado_pi']},
-    {'loja':'007 TDPI SUL', 'segmentos':['atacado_pi','varejo_pi']},
-    {'loja':'009 DM CE', 'segmentos':['atacado_ce']}
-]
 
-# Iterando sobre cada item do array
-for empresa in empresas_segm:
-    # Acessando as chaves e valores do dicionário
-    for chave, valor in empresa.items():
-        print(f"{chave}: {valor}")
+# 5. Tratamento de erros
+  # 5.1 Todas as licenças em uso
+
