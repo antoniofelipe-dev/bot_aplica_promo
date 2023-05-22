@@ -3,9 +3,12 @@ import os
 import time
 import pyautogui 
 import pandas as pd
+import keyboard
+import sys
 from authentication import login
 
 df = pd.read_excel('sheet\MODELO PLANILHA - ATUALIZACAO DE PRECOS.xlsx', sheet_name='PRECOS')
+
 
 #selected_company = df['NULOJA']
 
@@ -39,7 +42,7 @@ def select_company_segment(company, usr):
         '101': 'VAREJO PI',
         '103': 'VAREJO PI',
         '105': 'VAREJO PI',
-        '107': 'VAREJO MA',
+        '107': 'ATACAREJO MA',
         '109': 'VAREJO MA',
         '111': 'VAREJO PI',
         '115': 'VAREJO PI',
@@ -109,82 +112,97 @@ def select_company_segment(company, usr):
                     else:
                         print("Opção inválida! Escolha 0 ou 1.")
 
-                
-   
+                  
 
-def app(company):
-
-    usr, pwd = login() # Chama a função login() e atribui os valores de retorno às variáveis usr e pwd
-
-
+def main(company, usr, pwd):
     segment = select_company_segment(company, usr)
+    rep = 3
+    while rep > 0:    
+        try:
+            time.sleep(2)
+            app = subprocess.Popen('C:\C5Client\Comercial\Preco.exe')        
+            time.sleep(5)
 
-    #app = subprocess.Popen('C:\C5Client\Comercial\Preco.exe') #inicia o app
-
-    time.sleep(5)
-
-    pyautogui.write(usr)
-    pyautogui.press('tab')
-    pyautogui.write(pwd)
-    pyautogui.press('tab')
-    pyautogui.write(company) #numero da empresa
-    pyautogui.press('enter')
-
-    time.sleep(2)
-
-    atacado_varejo_c5 = pyautogui.locateCenterOnScreen(r'assets\atacadovarejo_c5.png', confidence= 0.7)
-    pyautogui.click(atacado_varejo_c5.x, atacado_varejo_c5.y)
-
-    time.sleep(1)
-
-    gerenciador_preco_c5 = pyautogui.locateCenterOnScreen(r'assets\gerenciadordeprecos_c5.png', confidence= 0.7)
-    pyautogui.click(gerenciador_preco_c5.x, gerenciador_preco_c5.y)
-
-    time.sleep(5)
-
-    pyautogui.press('down', 2)
-    pyautogui.press('tab')
-    pyautogui.press('down')
-
-    time.sleep(2)
-
-    if company in ["007", "013", "113", "119", "121"]: #empresas que possuem mais de um segmento
-        segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
-
-        if segment_img:
-            pass
-
-        else:
-
-            segmentos_ger_precos_c5 = pyautogui.locateCenterOnScreen(r'assets\ger_precos_c5_segment.png', confidence= 0.7)
-            pyautogui.click(segmentos_ger_precos_c5.x, segmentos_ger_precos_c5.y)
-
-            time.sleep(1)
-            click_in_white()
-
-            pointer_left = pyautogui.locateCenterOnScreen(r'assets\pointerleft_c5.png', confidence=0.9)
-
-            if pointer_left:
-                pyautogui.click(pointer_left.x, pointer_left.y)
-            else:
-                pass
-
-            time.sleep(1)
-
-            segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
-
-            pyautogui.click(segment_img.x, segment_img.y, clicks=2)
-
-            time.sleep(1)
-
+            pyautogui.write(usr)
+            pyautogui.press('tab')
+            pyautogui.write(pwd)
+            pyautogui.press('tab')
+            pyautogui.write(company) #numero da empresa
             pyautogui.press('enter')
 
+            time.sleep(2)
+
+            atacado_varejo_c5 = pyautogui.locateCenterOnScreen(r'assets\atacadovarejo_c5.png', confidence= 0.7)
+            pyautogui.click(atacado_varejo_c5.x, atacado_varejo_c5.y)
+
             time.sleep(1)
 
-    insert_c5 = pyautogui.locateCenterOnScreen(r'assets\insert_c5.png', confidence=0.7)
-    pyautogui.click(insert_c5.x, insert_c5.y)
+            gerenciador_preco_c5 = pyautogui.locateCenterOnScreen(r'assets\gerenciadordeprecos_c5.png', confidence= 0.7)
+            pyautogui.click(gerenciador_preco_c5.x, gerenciador_preco_c5.y)
 
-    #app.terminate() #encerra o app 
+            time.sleep(7)
+
+            pyautogui.press('down', 2)
+            pyautogui.press('tab')
+            pyautogui.press('down')
+
+            time.sleep(2)
+
+            if company in ["007", "013", "113", "119", "121"]: #empresas que possuem mais de um segmento
+                segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
+
+                if segment_img:
+                    pass
+
+                else:
+
+                    segmentos_ger_precos_c5 = pyautogui.locateCenterOnScreen(r'assets\ger_precos_c5_segment.png', confidence= 0.7)
+                    pyautogui.click(segmentos_ger_precos_c5.x, segmentos_ger_precos_c5.y)
+
+                    time.sleep(1)
+                    click_in_white()
+
+                    pointer_left = pyautogui.locateCenterOnScreen(r'assets\pointerleft_c5.png', confidence=0.9)
+
+                    if pointer_left:
+                        pyautogui.click(pointer_left.x, pointer_left.y)
+                    else:
+                        pass
+
+                    time.sleep(1)
+
+                    segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
+
+                    pyautogui.click(segment_img.x, segment_img.y, clicks=2)
+
+                    time.sleep(1)
+
+                    pyautogui.press('enter')
+
+                    time.sleep(1)
+
+            insert_c5 = pyautogui.locateCenterOnScreen(r'assets\insert_c5.png', confidence=0.7)
+            pyautogui.click(insert_c5.x, insert_c5.y)
+
+            time.sleep(1)
+            info_promotion()
+            time.sleep(1)
+            prod_promotion()
+
+            break
+        
+        except AttributeError:
+            time.sleep
+            app.terminate()
+            rep = rep - 1
+            continue
+
+    app.terminate()
+    print('\tO programa não pôde encontrar os parâmetros de localização da imagem referência.\n\tFavor, contate o desenvolvedor!')
+
+
+def shortcut_close():
+     keyboard.add_hotkey('ctrl+c', sys.exit())
 
 def finish_prog():
 
@@ -206,14 +224,14 @@ def info_promotion():
     from datetime import datetime
     promotion_name = df['NOME DA PROMOÇÃO'][0]
     dta_init = datetime.strptime(str(df.loc[0, 'DATA INÍCIO']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
-    dta_finally = datetime.strptime(str(df.loc[0, 'DATA FIM']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
+    dta_final = datetime.strptime(str(df.loc[0, 'DATA FIM']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
 
     time.sleep(1)
     pyautogui.write(promotion_name)
     pyautogui.press('tab')
     pyautogui.write(dta_init)
     pyautogui.press('tab')
-    pyautogui.write(dta_finally)
+    pyautogui.write(dta_final)
     pyautogui.press('tab', presses=4, interval=0.3)
     pyautogui.press('down')
 
@@ -222,55 +240,35 @@ def info_promotion():
 
 
 def prod_promotion():
-    pass
+    cod_prod =  df['CODIGO DO PRODUTO']
+    sale_promo_prod = df['NOVO PREÇO(PROMOÇÃO)'] - 1
+    
+    for produto, preco in zip(cod_prod, sale_promo_prod):
+        time.sleep(1)
+        pyautogui.write(str(produto))
+        pyautogui.press('tab')
+        time.sleep(2)
+        pyautogui.write(str(preco).replace(".", ","))
+        pyautogui.press('tab', presses=4, interval=0.1)
+
 
 def click_in_white():
-    try:
 
-        ok_botton = pyautogui.locateCenterOnScreen(r'assets\ok_bottonc5.png', confidence= 0.7)     
-        pyautogui.click(ok_botton.x, ok_botton.y - 50)
-    
-    except AttributeError as error:
-        print('Botão não encontrado! Reinicie o programa...')
-        pass
-
-
-def num_company(company): 
-     return company[:3]
+    ok_botton = pyautogui.locateCenterOnScreen(r'assets\ok_bottonc5.png', confidence= 0.7)     
+    pyautogui.click(ok_botton.x, ok_botton.y - 50)     
 
 def company_selected():
-     return df['COD. EMPRESA'][0]    
+     return f"{int(df['COD. EMPRESA'][0]):03d}"
 
 def register_log():
     pass
 
 if __name__ == '__main__':
-    from datetime import datetime
-    promotion_name = df['NOME DA PROMOÇÃO'][0]
 
-    dta_init = datetime.strptime(str(df.loc[0, 'DATA INÍCIO']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
-    dta_finally = datetime.strptime(str(df.loc[0, 'DATA FIM']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
+    company = company_selected()
 
-    print(dta_init, dta_finally)
+    usr, pwd = login()
 
-    # time.sleep(2)
-    # for loja in selected_company:
 
-    #     # Pressione as teclas Ctrl, Shift e T simultaneamente
-    #     pyautogui.keyDown('ctrl')
-    #     pyautogui.keyDown('shift')
-    #     pyautogui.keyDown('t')
-
-    #     # Libere as teclas
-    #     pyautogui.keyUp('ctrl')
-    #     pyautogui.keyUp('shift')
-    #     pyautogui.keyUp('t')
-
-    #     time.sleep(1)
-    #     pyautogui.write(loja)
-    #     pyautogui.press('enter')
-    #     time.sleep(6)
-
-         
 
         

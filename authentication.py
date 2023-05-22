@@ -2,7 +2,6 @@ import requests
 import getpass
 import os
 
-# Solicitador de TOKEN
 def login():
 
         while True:
