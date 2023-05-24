@@ -3,19 +3,12 @@ import os
 import time
 import pyautogui 
 import pandas as pd
-import keyboard
-import sys
-from authentication import login
+import pyperclip
 
 df = pd.read_excel('sheet\MODELO PLANILHA - ATUALIZACAO DE PRECOS.xlsx', sheet_name='PRECOS')
 
-
-#selected_company = df['NULOJA']
-
-
 def select_company_segment(company, usr):
-    empresas_segm = {
-        
+    empresas_segm = {      
         '007': ['ATACADO PI', 'VAREJO PI'],
         '013': ['ATACADO MA', 'VAREJO MA'],
         '113': ['ATACAREJO PI', 'VAREJO PI'],
@@ -91,10 +84,10 @@ def select_company_segment(company, usr):
                         print("Opção inválida! Escolha 0 ou 1.")
         else:
             if company == empresa:
-                print(f"Empresa selecionada: {company}   Segmento selecionado: {segment}")
-                print("\tConfirmar?\n")
+                print(f"Empresa selecionada: {company}  Segmento selecionado: {segment}")
+                print(" Deseja confirmar?\n")
                 print("[0] - Sim, desejo confirmar")
-                print("[1] - Sair")
+                print("[1] - Não, sair do programa.")
                 while True:
                     r2=input("\nSelecione uma das opções acima: ")
                     if r2 == '0':
@@ -116,12 +109,12 @@ def select_company_segment(company, usr):
 
 def main(company, usr, pwd):
     segment = select_company_segment(company, usr)
-    rep = 3
-    while rep > 0:    
+    attempts = 3
+    while attempts > 0:    
         try:
-            time.sleep(2)
+            # time.sleep(1)
             app = subprocess.Popen('C:\C5Client\Comercial\Preco.exe')        
-            time.sleep(5)
+            time.sleep(3)
 
             pyautogui.write(usr)
             pyautogui.press('tab')
@@ -135,18 +128,18 @@ def main(company, usr, pwd):
             atacado_varejo_c5 = pyautogui.locateCenterOnScreen(r'assets\atacadovarejo_c5.png', confidence= 0.7)
             pyautogui.click(atacado_varejo_c5.x, atacado_varejo_c5.y)
 
-            time.sleep(1)
+            # time.sleep(1)
 
             gerenciador_preco_c5 = pyautogui.locateCenterOnScreen(r'assets\gerenciadordeprecos_c5.png', confidence= 0.7)
             pyautogui.click(gerenciador_preco_c5.x, gerenciador_preco_c5.y)
 
-            time.sleep(7)
+            time.sleep(3)
 
             pyautogui.press('down', 2)
             pyautogui.press('tab')
             pyautogui.press('down')
 
-            time.sleep(2)
+            time.sleep(1)
 
             if company in ["007", "013", "113", "119", "121"]: #empresas que possuem mais de um segmento
                 segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
@@ -169,13 +162,13 @@ def main(company, usr, pwd):
                     else:
                         pass
 
-                    time.sleep(1)
+                    # time.sleep(1)
 
                     segment_img = pyautogui.locateCenterOnScreen(r'assets\C5_segments\{}.png'.format(segment), confidence=0.9)
 
                     pyautogui.click(segment_img.x, segment_img.y, clicks=2)
 
-                    time.sleep(1)
+                    # time.sleep(1)
 
                     pyautogui.press('enter')
 
@@ -188,31 +181,32 @@ def main(company, usr, pwd):
             info_promotion()
             time.sleep(1)
             prod_promotion()
+            
+            time.sleep(2)
+            print("\n            Promoção criada! Programa finalizado!             \n")
 
             break
         
-        except AttributeError:
+        except Exception:
             time.sleep
             app.terminate()
-            rep = rep - 1
+            attempts = attempts - 1
+            print(f"Tentativas de execução restantes: {attempts}\n")
             continue
+         
 
-    app.terminate()
-    print('\tO programa não pôde encontrar os parâmetros de localização da imagem referência.\n\tFavor, contate o desenvolvedor!')
-
-
-def shortcut_close():
-     keyboard.add_hotkey('ctrl+c', sys.exit())
+    if attempts < 1:   
+        app.terminate()
+        print("Tentativas de execuções automáticas excedidas. Tente novamente, e caso o erro persista, contate o desenvolvedor!\n")
 
 def finish_prog():
-
-        i = 5
-        while i > 0:
-                os.system('cls' if os.name == 'nt' else 'clear')
-                print("\n\n   Fechando o programa em", i)
-                i = i - 1
-                time.sleep(1)
-                os.system('cls' if os.name == 'nt' else 'clear')
+    i = 5
+    while i > 0:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\n\n   Fechando o programa em", i)
+        i = i - 1
+        time.sleep(1)
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("\n\n   Obrigado!")
         time.sleep(2)
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -220,55 +214,42 @@ def finish_prog():
 
 
 def info_promotion():
-
     from datetime import datetime
+
     promotion_name = df['NOME DA PROMOÇÃO'][0]
     dta_init = datetime.strptime(str(df.loc[0, 'DATA INÍCIO']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
     dta_final = datetime.strptime(str(df.loc[0, 'DATA FIM']), "%Y-%m-%d %H:%M:%S").date().strftime("%d/%m/%Y")
 
-    time.sleep(1)
-    pyautogui.write(promotion_name)
+    # time.sleep(1)
+
+    pyperclip.copy(promotion_name)
+    pyautogui.hotkey('ctrl', 'v')
     pyautogui.press('tab')
     pyautogui.write(dta_init)
     pyautogui.press('tab')
     pyautogui.write(dta_final)
-    pyautogui.press('tab', presses=4, interval=0.3)
+    pyautogui.press('tab', presses=4)
     pyautogui.press('down')
 
     ok_botton = pyautogui.locateCenterOnScreen(r'assets\ok_bottonc5.png', confidence= 0.7)     
     pyautogui.click(ok_botton.x, ok_botton.y)
-
 
 def prod_promotion():
     cod_prod =  df['CODIGO DO PRODUTO']
     sale_promo_prod = df['NOVO PREÇO(PROMOÇÃO)'] - 1
     
     for produto, preco in zip(cod_prod, sale_promo_prod):
-        time.sleep(1)
+        # time.sleep(1)
         pyautogui.write(str(produto))
         pyautogui.press('tab')
-        time.sleep(2)
+        # time.sleep(2)
         pyautogui.write(str(preco).replace(".", ","))
         pyautogui.press('tab', presses=4, interval=0.1)
 
-
 def click_in_white():
-
     ok_botton = pyautogui.locateCenterOnScreen(r'assets\ok_bottonc5.png', confidence= 0.7)     
     pyautogui.click(ok_botton.x, ok_botton.y - 50)     
 
 def company_selected():
      return f"{int(df['COD. EMPRESA'][0]):03d}"
 
-def register_log():
-    pass
-
-if __name__ == '__main__':
-
-    company = company_selected()
-
-    usr, pwd = login()
-
-
-
-        
